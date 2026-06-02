@@ -1,0 +1,389 @@
+diff --git a/libs/shapelib b/libs/shapelib
+--- a/libs/shapelib
++++ b/libs/shapelib
+@@ -1 +1 @@
+-Subproject commit 6189dbd83ba2382fe0ebbc8f2308e582832c93fa
++Subproject commit 6189dbd83ba2382fe0ebbc8f2308e582832c93fa-dirty
+diff --git a/src/AutoPilotPlugins/PX4/SensorsSetup.qml b/src/AutoPilotPlugins/PX4/SensorsSetup.qml
+index caa5e2f..b943903 100644
+--- a/src/AutoPilotPlugins/PX4/SensorsSetup.qml
++++ b/src/AutoPilotPlugins/PX4/SensorsSetup.qml
+@@ -11,7 +11,7 @@ import QtQuick                  2.3
+ import QtQuick.Controls         1.2
+ import QtQuick.Controls.Styles  1.4
+ import QtQuick.Dialogs          1.2
+-import QtQuick.Layouts          1.15
++import QtQuick.Layouts          1.12
+ 
+ import QGroundControl               1.0
+ import QGroundControl.FactSystem    1.0
+diff --git a/src/Camera/QGCCameraControl.cc b/src/Camera/QGCCameraControl.cc
+index 3d0c920..27e0ff4 100644
+--- a/src/Camera/QGCCameraControl.cc
++++ b/src/Camera/QGCCameraControl.cc
+@@ -1298,7 +1298,7 @@ QGCCameraControl::_processConditionTest(const QString conditionTest)
+     QStringList test;
+ 
+     auto split = [&conditionTest](const QString& sep ) {
+-        return conditionTest.split(sep, Qt::SkipEmptyParts);
++        return conditionTest.split(sep, QString::SkipEmptyParts);
+     };
+ 
+     if(conditionTest.contains("!=")) {
+@@ -1346,7 +1346,7 @@ QGCCameraControl::_processCondition(const QString condition)
+     bool result = true;
+     bool andOp  = true;
+     if(!condition.isEmpty()) {
+-        QStringList scond = condition.split(" ", Qt::SkipEmptyParts);
++        QStringList scond = condition.split(" ", QString::SkipEmptyParts);
+         while(scond.size()) {
+             QString test = scond.first();
+             scond.removeFirst();
+diff --git a/src/FactSystem/FactMetaData.cc b/src/FactSystem/FactMetaData.cc
+index 123d51e..6458232 100644
+--- a/src/FactSystem/FactMetaData.cc
++++ b/src/FactSystem/FactMetaData.cc
+@@ -1552,10 +1552,10 @@ bool FactMetaData::_parseEnum(const QJsonObject& jsonObject, DefineMap_t defineM
+     }
+ 
+     QString strings = jsonObject.value(_enumStringsJsonKey).toString();
+-    rgDescriptions = defineMap.value(strings, strings).split(",", Qt::SkipEmptyParts);
++    rgDescriptions = defineMap.value(strings, strings).split(",", QString::SkipEmptyParts);
+ 
+     QString values = jsonObject.value(_enumValuesJsonKey).toString();
+-    rgValues = defineMap.value(values, values).split(",", Qt::SkipEmptyParts);
++    rgValues = defineMap.value(values, values).split(",", QString::SkipEmptyParts);
+ 
+     if (rgDescriptions.count() != rgValues.count()) {
+         errorString = QStringLiteral("Enum strings/values count mismatch - strings:values %1:%2").arg(rgDescriptions.count()).arg(rgValues.count());
+diff --git a/src/FactSystem/ParameterManager.cc b/src/FactSystem/ParameterManager.cc
+index 543cb4d..83ba8a6 100644
+--- a/src/FactSystem/ParameterManager.cc
++++ b/src/FactSystem/ParameterManager.cc
+@@ -1465,7 +1465,7 @@ bool ParameterManager::_parseParamFile(const QString& filename)
+         goto Error;
+     }
+ 
+-    qCDebug(ParameterManagerVerbose2Log) << "_parseParamFile: magic: 0x" << Qt::hex << magic;
++    qCDebug(ParameterManagerVerbose2Log) << "_parseParamFile: magic: 0x" << hex << magic;
+     qCDebug(ParameterManagerVerbose2Log) << "_parseParamFile: num_params:" << num_params
+                                  << " total_params:" << total_params;
+ 
+diff --git a/src/FirmwarePlugin/APM/APMFirmwarePlugin.cc b/src/FirmwarePlugin/APM/APMFirmwarePlugin.cc
+index c099708..f2af1d4 100644
+--- a/src/FirmwarePlugin/APM/APMFirmwarePlugin.cc
++++ b/src/FirmwarePlugin/APM/APMFirmwarePlugin.cc
+@@ -661,7 +661,7 @@ void APMFirmwarePlugin::_soloVideoHandshake(void)
+ {
+     QTcpSocket* socket = new QTcpSocket(this);
+ 
+-    QObject::connect(socket, &QAbstractSocket::errorOccurred, this, &APMFirmwarePlugin::_artooSocketError);
++    QObject::connect(socket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error), this, &APMFirmwarePlugin::_artooSocketError);
+     socket->connectToHost(_artooIP, _artooVideoHandshakePort);
+ }
+ 
+diff --git a/src/FirmwarePlugin/APM/ArduPilot-Parameter-Repository b/src/FirmwarePlugin/APM/ArduPilot-Parameter-Repository
+--- a/src/FirmwarePlugin/APM/ArduPilot-Parameter-Repository
++++ b/src/FirmwarePlugin/APM/ArduPilot-Parameter-Repository
+@@ -1 +1 @@
+-Subproject commit 772370ab665fd7a7edcfe488f1c900a1d7d3a4a9
++Subproject commit 772370ab665fd7a7edcfe488f1c900a1d7d3a4a9-dirty
+diff --git a/src/LogCompressor.cc b/src/LogCompressor.cc
+index 9c0d24a..b369fbf 100644
+--- a/src/LogCompressor.cc
++++ b/src/LogCompressor.cc
+@@ -55,7 +55,7 @@ void LogCompressor::run()
+ 
+     QString outFileName;
+ 
+-    QStringList parts = QFileInfo(infile.fileName()).absoluteFilePath().split(".", Qt::SkipEmptyParts);
++    QStringList parts = QFileInfo(infile.fileName()).absoluteFilePath().split(".", QString::SkipEmptyParts);
+ 
+     parts.replace(0, parts.first() + "_compressed");
+     parts.replace(parts.size()-1, "txt");
+diff --git a/src/MissionManager/MissionCommandUIInfo.cc b/src/MissionManager/MissionCommandUIInfo.cc
+index 3f1083b..3cc75db 100644
+--- a/src/MissionManager/MissionCommandUIInfo.cc
++++ b/src/MissionManager/MissionCommandUIInfo.cc
+@@ -411,7 +411,7 @@ bool MissionCommandUIInfo::loadJsonInfo(const QJsonObject& jsonObject, bool requ
+             paramInfo->_param =         i;
+             paramInfo->_units =         paramObject.value(_unitsJsonKey).toString();
+             paramInfo->_nanUnchanged =  paramObject.value(_nanUnchangedJsonKey).toBool(false);
+-            paramInfo->_enumStrings =   paramObject.value(_enumStringsJsonKey).toString().split(",", Qt::SkipEmptyParts);
++            paramInfo->_enumStrings =   paramObject.value(_enumStringsJsonKey).toString().split(",", QString::SkipEmptyParts);
+ 
+             // The min and max values are defaulted correctly already, so only set them if a value is present in the JSON.
+             if (paramObject.value(_minJsonKey).isDouble()) {
+@@ -435,7 +435,7 @@ bool MissionCommandUIInfo::loadJsonInfo(const QJsonObject& jsonObject, bool requ
+                 paramInfo->_defaultValue = paramInfo->_nanUnchanged ? std::numeric_limits<double>::quiet_NaN() : 0;
+             }
+ 
+-            QStringList enumValues = paramObject.value(_enumValuesJsonKey).toString().split(",", Qt::SkipEmptyParts);
++            QStringList enumValues = paramObject.value(_enumValuesJsonKey).toString().split(",", QString::SkipEmptyParts);
+             for (const QString &enumValue: enumValues) {
+                 bool    convertOk;
+                 double  value = enumValue.toDouble(&convertOk);
+diff --git a/src/MissionManager/QGCMapPolygon.cc b/src/MissionManager/QGCMapPolygon.cc
+index dc73a28..214d262 100644
+--- a/src/MissionManager/QGCMapPolygon.cc
++++ b/src/MissionManager/QGCMapPolygon.cc
+@@ -462,7 +462,7 @@ void QGCMapPolygon::offset(double distance)
+         QGeoCoordinate  tangentOrigin = vertexCoordinate(0);
+         for (int i=0; i<rgOffsetEdges.count(); i++) {
+             int prevIndex = i == 0 ? rgOffsetEdges.count() - 1 : i - 1;
+-            auto intersect = rgOffsetEdges[prevIndex].intersects(rgOffsetEdges[i], &newVertex);
++            auto intersect = rgOffsetEdges[prevIndex].intersect(rgOffsetEdges[i], &newVertex);
+             if (intersect == QLineF::NoIntersection) {
+                 // FIXME: Better error handling?
+                 qWarning("Intersection failed");
+diff --git a/src/MissionManager/QGCMapPolyline.cc b/src/MissionManager/QGCMapPolyline.cc
+index 195d43c..3541ed1 100644
+--- a/src/MissionManager/QGCMapPolyline.cc
++++ b/src/MissionManager/QGCMapPolyline.cc
+@@ -334,7 +334,7 @@ QList<QGeoCoordinate> QGCMapPolyline::offsetPolyline(double distance)
+         // Intersect the offset edges to generate new central vertices
+         QPointF  newVertex;
+         for (int i=1; i<rgOffsetEdges.count(); i++) {
+-            auto intersect = rgOffsetEdges[i - 1].intersects(rgOffsetEdges[i], &newVertex);
++            auto intersect = rgOffsetEdges[i - 1].intersect(rgOffsetEdges[i], &newVertex);
+             if (intersect == QLineF::NoIntersection) {
+                 // Two lines are colinear
+                 newVertex = rgOffsetEdges[i].p2();
+diff --git a/src/MissionManager/SurveyComplexItem.cc b/src/MissionManager/SurveyComplexItem.cc
+index ebc63ce..1e1a1f8 100644
+--- a/src/MissionManager/SurveyComplexItem.cc
++++ b/src/MissionManager/SurveyComplexItem.cc
+@@ -521,7 +521,7 @@ void SurveyComplexItem::_intersectLinesWithRect(const QList<QLineF>& lineList, c
+         const QLineF& line = lineList[i];
+ 
+         auto isLineBoundedIntersect = [&line, &intersectPoint](const QLineF& linePosition) {
+-            return line.intersects(linePosition, &intersectPoint) == QLineF::BoundedIntersection;
++            return line.intersect(linePosition, &intersectPoint) == QLineF::BoundedIntersection;
+         };
+ 
+         int foundCount = 0;
+@@ -582,7 +582,7 @@ void SurveyComplexItem::_intersectLinesWithPolygon(const QList<QLineF>& lineList
+             QPointF intersectPoint;
+             QLineF polygonLine = QLineF(polygon[j], polygon[j+1]);
+ 
+-            auto intersect = line.intersects(polygonLine, &intersectPoint);
++            auto intersect = line.intersect(polygonLine, &intersectPoint);
+             if (intersect == QLineF::BoundedIntersection) {
+                 if (!intersections.contains(intersectPoint)) {
+                     intersections.append(intersectPoint);
+@@ -1097,7 +1097,7 @@ bool SurveyComplexItem::_VertexCanSeeOther(const QPolygonF& polygon, const QPoin
+         QLineF lineCD(*vertexC, *vertexD);
+         QPointF intersection{};
+ 
+-        auto intersects = lineAB.intersects(lineCD, &intersection);
++        auto intersects = lineAB.intersect(lineCD, &intersection);
+         if (intersects == QLineF::IntersectType::BoundedIntersection) {
+ //            auto diffIntersection = *vertexA - intersection;
+ //            auto distanceIntersection = sqrtf(diffIntersection.x() * diffIntersection.x() + diffIntersection.y()*diffIntersection.y());
+diff --git a/src/PositionManager/PositionManager.cpp b/src/PositionManager/PositionManager.cpp
+index 78fbd8f..3955c2b 100644
+--- a/src/PositionManager/PositionManager.cpp
++++ b/src/PositionManager/PositionManager.cpp
+@@ -45,13 +45,8 @@ void QGCPositionManager::setToolbox(QGCToolbox *toolbox)
+ 
+    if (!_defaultSource) {
+        //-- Otherwise, create a default one
+-#if 0
+-       // Calling this can end up falling through a path which tries to instantiate a serialnmea source.
+-       // The Qt code for this will pop a qWarning if there are no serial ports available. This in turn
+-       // causes you to be unable to run with QT_FATAL_WARNINGS=1 to debug stuff.
+        _defaultSource = QGeoPositionInfoSource::createDefaultSource(this);
+-#else
+-       // So instead we create our own version of QGeoPositionInfoSource::createDefaultSource which isn't as stupid.
++#if 0
+        QList<QJsonObject> plugins = QGeoPositionInfoSourcePrivate::pluginsSorted();
+        foreach (const QJsonObject &obj, plugins) {
+            if (obj.value("Position").isBool() && obj.value("Position").toBool()) {
+diff --git a/src/QGCComboBox.cc b/src/QGCComboBox.cc
+index 628796a..990668d 100644
+--- a/src/QGCComboBox.cc
++++ b/src/QGCComboBox.cc
+@@ -24,5 +24,5 @@ void QGCComboBox::simulateUserSetCurrentIndex(int index)
+     
+     // We have to manually signal activated
+     emit activated(index);
+-    emit textActivated(itemText(index));
++    emit activated(itemText(index));
+ }
+diff --git a/src/QGCFileDownload.cc b/src/QGCFileDownload.cc
+index e67da07..f94af23 100644
+--- a/src/QGCFileDownload.cc
++++ b/src/QGCFileDownload.cc
+@@ -64,7 +64,7 @@ bool QGCFileDownload::download(const QString& remoteFile, const QVector<QPair<QN
+ 
+     connect(networkReply, &QNetworkReply::downloadProgress, this, &QGCFileDownload::downloadProgress);
+     connect(networkReply, &QNetworkReply::finished, this, &QGCFileDownload::_downloadFinished);
+-    connect(networkReply, &QNetworkReply::errorOccurred, this, &QGCFileDownload::_downloadError);
++    connect(networkReply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), this, &QGCFileDownload::_downloadError);
+     return true;
+ }
+ 
+diff --git a/src/QmlControls/ParameterEditorController.cc b/src/QmlControls/ParameterEditorController.cc
+index c15cbc0..9ab9497 100644
+--- a/src/QmlControls/ParameterEditorController.cc
++++ b/src/QmlControls/ParameterEditorController.cc
+@@ -369,7 +369,7 @@ void ParameterEditorController::_searchTextChanged(void)
+ {
+     QObjectList newParameterList;
+ 
+-    QStringList rgSearchStrings = _searchText.split(' ', Qt::SkipEmptyParts);
++    QStringList rgSearchStrings = _searchText.split(' ', QString::SkipEmptyParts);
+ 
+     if (rgSearchStrings.isEmpty() && !_showModifiedOnly) {
+         ParameterEditorCategory* category = _categories.count() ? _categories.value<ParameterEditorCategory*>(0) : nullptr;
+diff --git a/src/QmlControls/ParameterEditorDialog.qml b/src/QmlControls/ParameterEditorDialog.qml
+index f0bdf70..04b8a95 100644
+--- a/src/QmlControls/ParameterEditorDialog.qml
++++ b/src/QmlControls/ParameterEditorDialog.qml
+@@ -8,8 +8,8 @@
+  ****************************************************************************/
+ 
+ import QtQuick          2.3
+-import QtQuick.Controls 2.15
+-import QtQuick.Layouts  1.15
++import QtQuick.Controls 2.12
++import QtQuick.Layouts  1.12
+ import QtQuick.Dialogs  1.3
+ 
+ import QGroundControl               1.0
+diff --git a/src/QmlControls/QGCSimpleMessageDialog.qml b/src/QmlControls/QGCSimpleMessageDialog.qml
+index 460dc32..2324afc 100644
+--- a/src/QmlControls/QGCSimpleMessageDialog.qml
++++ b/src/QmlControls/QGCSimpleMessageDialog.qml
+@@ -7,8 +7,8 @@
+  *
+  ****************************************************************************/
+ 
+-import QtQuick          2.15
+-import QtQuick.Layouts  1.15
++import QtQuick          2.12
++import QtQuick.Layouts  1.12
+ 
+ import QGroundControl.Controls      1.0
+ import QGroundControl.ScreenTools   1.0
+diff --git a/src/QmlControls/QGroundControlQmlGlobal.cc b/src/QmlControls/QGroundControlQmlGlobal.cc
+index 2a32c71..1d74ce0 100644
+--- a/src/QmlControls/QGroundControlQmlGlobal.cc
++++ b/src/QmlControls/QGroundControlQmlGlobal.cc
+@@ -228,7 +228,7 @@ bool QGroundControlQmlGlobal::linesIntersect(QPointF line1A, QPointF line1B, QPo
+ {
+     QPointF intersectPoint;
+ 
+-    auto intersect = QLineF(line1A, line1B).intersects(QLineF(line2A, line2B), &intersectPoint);
++    auto intersect = QLineF(line1A, line1B).intersect(QLineF(line2A, line2B), &intersectPoint);
+ 
+     return  intersect == QLineF::BoundedIntersection &&
+             intersectPoint != line1A && intersectPoint != line1B;
+diff --git a/src/QmlControls/SliderSwitch.qml b/src/QmlControls/SliderSwitch.qml
+index f06575e..ed298da 100644
+--- a/src/QmlControls/SliderSwitch.qml
++++ b/src/QmlControls/SliderSwitch.qml
+@@ -1,5 +1,5 @@
+-import QtQuick                  2.15
+-import QtQuick.Controls         2.15
++import QtQuick                  2.12
++import QtQuick.Controls         2.12
+ 
+ import QGroundControl.ScreenTools   1.0
+ import QGroundControl.Palette       1.0
+diff --git a/src/QtLocationPlugin/GoogleMapProvider.cpp b/src/QtLocationPlugin/GoogleMapProvider.cpp
+index 2d612b5..b3dfe84 100644
+--- a/src/QtLocationPlugin/GoogleMapProvider.cpp
++++ b/src/QtLocationPlugin/GoogleMapProvider.cpp
+@@ -116,7 +116,7 @@ void GoogleMapProvider::_tryCorrectGoogleVersions(QNetworkAccessManager* network
+         _googleReply = networkManager->get(qheader);
+         connect(_googleReply, &QNetworkReply::finished, this, &GoogleMapProvider::_googleVersionCompleted);
+         connect(_googleReply, &QNetworkReply::destroyed, this, &GoogleMapProvider::_replyDestroyed);
+-        connect(_googleReply, &QNetworkReply::errorOccurred, this, &GoogleMapProvider::_networkReplyError);
++        connect(_googleReply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), this, &GoogleMapProvider::_networkReplyError);
+         networkManager->setProxy(proxy);
+     }
+ }
+diff --git a/src/QtLocationPlugin/QGCMapTileSet.cpp b/src/QtLocationPlugin/QGCMapTileSet.cpp
+index 5888cad..890cd90 100644
+--- a/src/QtLocationPlugin/QGCMapTileSet.cpp
++++ b/src/QtLocationPlugin/QGCMapTileSet.cpp
+@@ -252,7 +252,7 @@ void QGCCachedTileSet::_prepareDownload()
+             reply->setParent(0);
+             QGCFileDownload::setIgnoreSSLErrorsIfNeeded(*reply);
+             connect(reply, &QNetworkReply::finished, this, &QGCCachedTileSet::_networkReplyFinished);
+-            connect(reply, &QNetworkReply::errorOccurred, this, &QGCCachedTileSet::_networkReplyError);
++            connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), this, &QGCCachedTileSet::_networkReplyError);
+             _replies.insert(tile->hash(), reply);
+ #if !defined(__mobile__)
+             _networkManager->setProxy(proxy);
+diff --git a/src/QtLocationPlugin/QGCTileCacheWorker.cpp b/src/QtLocationPlugin/QGCTileCacheWorker.cpp
+index f8f9188..4ed524d 100644
+--- a/src/QtLocationPlugin/QGCTileCacheWorker.cpp
++++ b/src/QtLocationPlugin/QGCTileCacheWorker.cpp
+@@ -1192,7 +1192,7 @@ QGCCacheWorker::_lookupReady(QHostInfo info)
+             emit internetStatus(true);
+             socket->deleteLater();
+         });
+-        connect(socket, &QAbstractSocket::errorOccurred, this, [this, socket](QAbstractSocket::SocketError error) {
++        connect(socket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error), this, [this, socket](QAbstractSocket::SocketError error) {
+             qCDebug(QGCTileCacheLog) << "No internet connection, reason:" << error;
+             emit internetStatus(false);
+             socket->deleteLater();
+diff --git a/src/Settings/AppSettings.cc b/src/Settings/AppSettings.cc
+index 37e4dbc..24f00d0 100644
+--- a/src/Settings/AppSettings.cc
++++ b/src/Settings/AppSettings.cc
+@@ -334,7 +334,7 @@ QList<int> AppSettings::firstRunPromptsIdsVariantToList(const QVariant& firstRun
+ {
+     QList<int> rgIds;
+ 
+-    QStringList strIdList = firstRunPromptIds.toString().split(",", Qt::SkipEmptyParts);
++    QStringList strIdList = firstRunPromptIds.toString().split(",", QString::SkipEmptyParts);
+ 
+     for (const QString& strId: strIdList) {
+         rgIds.append(strId.toInt());
+diff --git a/src/Terrain/TerrainQuery.cc b/src/Terrain/TerrainQuery.cc
+index 4da3986..68b9963 100644
+--- a/src/Terrain/TerrainQuery.cc
++++ b/src/Terrain/TerrainQuery.cc
+@@ -131,7 +131,7 @@ void TerrainAirMapQuery::_sendQuery(const QString& path, const QUrlQuery& urlQue
+     connect(networkReply, &QNetworkReply::finished, this, &TerrainAirMapQuery::_requestFinished);
+     connect(networkReply, &QNetworkReply::sslErrors, this, &TerrainAirMapQuery::_sslErrors);
+ 
+-    connect(networkReply, &QNetworkReply::errorOccurred, this, &TerrainAirMapQuery::_requestError);
++    connect(networkReply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), this, &TerrainAirMapQuery::_requestError);
+ }
+ 
+ void TerrainAirMapQuery::_requestError(QNetworkReply::NetworkError code)
+diff --git a/src/comm/SerialLink.cc b/src/comm/SerialLink.cc
+index 8527212..f96bc14 100644
+--- a/src/comm/SerialLink.cc
++++ b/src/comm/SerialLink.cc
+@@ -178,9 +178,9 @@ bool SerialLink::_hardwareConnect(QSerialPort::SerialPortError& error, QString&
+     _port = new QSerialPort(_serialConfig->portName(), this);
+ 
+ #ifdef Q_OS_ANDROID
+-    QObject::connect(_port, SIGNAL(&QSerialPort::error), this, SLOT(&SerialLink::linkError));
++    QObject::connect(_port, SIGNAL(QOverload<QSerialPort::SerialPortError>::of(&QSerialPort::error)), this, SLOT(&SerialLink::linkError));
+ #else
+-    QObject::connect(_port, &QSerialPort::errorOccurred, this, &SerialLink::linkError);
++    QObject::connect(_port, QOverload<QSerialPort::SerialPortError>::of(&QSerialPort::error), this, &SerialLink::linkError);
+ #endif
+     QObject::connect(_port, &QIODevice::readyRead, this, &SerialLink::_readBytes);
+ 
+diff --git a/src/comm/TCPLink.cc b/src/comm/TCPLink.cc
+index d932bda..d08935e 100644
+--- a/src/comm/TCPLink.cc
++++ b/src/comm/TCPLink.cc
+@@ -114,8 +114,8 @@ bool TCPLink::_hardwareConnect()
+     _socket = new QTcpSocket();
+     QObject::connect(_socket, &QIODevice::readyRead, this, &TCPLink::_readBytes);
+ 
+-    QSignalSpy errorSpy(_socket, &QAbstractSocket::errorOccurred);
+-    QObject::connect(_socket, &QAbstractSocket::errorOccurred, this, &TCPLink::_socketError);
++    QSignalSpy errorSpy(_socket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error));
++    QObject::connect(_socket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error), this, &TCPLink::_socketError);
+ 
+     _socket->connectToHost(_tcpConfig->host(), _tcpConfig->port());
+ 

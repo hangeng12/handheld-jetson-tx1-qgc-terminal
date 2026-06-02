@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=QGroundControl
+GenericName=Ground Control Station
+Comment=Ground Control Station for MAVLink drones
+Exec=/home/jetson/.local/bin/qgroundcontrol
+Icon=/opt/qgroundcontrol/qgroundcontrol.png
+Terminal=false
+Type=Application
+Categories=Utility;Science;
+StartupWMClass=QGroundControl
+StartupNotify=true

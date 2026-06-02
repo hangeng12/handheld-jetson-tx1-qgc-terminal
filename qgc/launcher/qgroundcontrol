@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# ===== Jetson Tegra GPU fixes for QGroundControl =====
+
+# Use GLX instead of EGL — on this Tegra TX1, xcb_egl causes a SIGSEGV
+# during Qt Quick scene graph initialization (exit code 139), leaving a
+# black window.  xcb_glx works correctly with NVIDIA GLX 4.6.
+export QT_XCB_GL_INTEGRATION=xcb_glx
+
+# Use single-threaded "basic" render loop. The default "threaded" loop
+# has known deadlocks on Jetson Tegra that cause the window to never
+# map (appears as "already running" on restart attempts).
+export QSG_RENDER_LOOP=basic
+
+# Disable the threaded QML render loop (redundant safety with above)
+export QML_BAD_GUI_RENDER_LOOP=1
+
+# ---- Qt paths required by QGC ----
+export QT_PLUGIN_PATH=/usr/lib/aarch64-linux-gnu/qt5/plugins
+export QML2_IMPORT_PATH=/usr/lib/aarch64-linux-gnu/qt5/qml
+
+# ---- Small screen (800x480) settings ----
+# Run fullscreen so the QGC UI fills the entire display; the title bar
+# with its close button would otherwise be pushed off-screen on a display
+# this small.  Use QGC's internal menu → Quit to exit (or Alt+F4).
+exec /opt/qgroundcontrol/QGroundControl --fullscreen "$@"

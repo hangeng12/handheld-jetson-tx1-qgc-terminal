@@ -1,0 +1,28 @@
+ libs/shapelib                                         | 0
+ src/AutoPilotPlugins/PX4/SensorsSetup.qml             | 2 +-
+ src/Camera/QGCCameraControl.cc                        | 4 ++--
+ src/FactSystem/FactMetaData.cc                        | 4 ++--
+ src/FactSystem/ParameterManager.cc                    | 2 +-
+ src/FirmwarePlugin/APM/APMFirmwarePlugin.cc           | 2 +-
+ src/FirmwarePlugin/APM/ArduPilot-Parameter-Repository | 0
+ src/LogCompressor.cc                                  | 2 +-
+ src/MissionManager/MissionCommandUIInfo.cc            | 4 ++--
+ src/MissionManager/QGCMapPolygon.cc                   | 2 +-
+ src/MissionManager/QGCMapPolyline.cc                  | 2 +-
+ src/MissionManager/SurveyComplexItem.cc               | 6 +++---
+ src/PositionManager/PositionManager.cpp               | 7 +------
+ src/QGCComboBox.cc                                    | 2 +-
+ src/QGCFileDownload.cc                                | 2 +-
+ src/QmlControls/ParameterEditorController.cc          | 2 +-
+ src/QmlControls/ParameterEditorDialog.qml             | 4 ++--
+ src/QmlControls/QGCSimpleMessageDialog.qml            | 4 ++--
+ src/QmlControls/QGroundControlQmlGlobal.cc            | 2 +-
+ src/QmlControls/SliderSwitch.qml                      | 4 ++--
+ src/QtLocationPlugin/GoogleMapProvider.cpp            | 2 +-
+ src/QtLocationPlugin/QGCMapTileSet.cpp                | 2 +-
+ src/QtLocationPlugin/QGCTileCacheWorker.cpp           | 2 +-
+ src/Settings/AppSettings.cc                           | 2 +-
+ src/Terrain/TerrainQuery.cc                           | 2 +-
+ src/comm/SerialLink.cc                                | 4 ++--
+ src/comm/TCPLink.cc                                   | 4 ++--
+ 27 files changed, 35 insertions(+), 40 deletions(-)
