@@ -6,7 +6,7 @@
 
 启动脚本默认使用以下路径：
 
-``text
+```text
 /opt/qgroundcontrol/QGroundControl
 /opt/qgroundcontrol/qgroundcontrol.png
 /home/jetson/.local/bin/qgroundcontrol
