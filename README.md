@@ -51,9 +51,6 @@ qgc/artifacts-info/BINARY_ARTIFACT.md
 
 ## About the QGroundControl Source
 
-
-## About the QGroundControl Source
-
 The full QGroundControl source tree was not copied into this repository because it is a large upstream project with submodules and build artifacts. The practical and GitHub-friendly workflow is:
 
 1. Clone upstream QGroundControl.
@@ -68,45 +65,70 @@ See `docs/QGC_BUILD_AND_EXPORT_NOTES.md` for details.
 
 完整的 QGroundControl 上游源码没有直接放入本仓库。推荐复现流程如下：
 
+```bash
 git clone https://github.com/mavlink/qgroundcontrol.git
 cd qgroundcontrol
 git checkout 495a17b4964d3ed90f241388b3a02a35e96c9663
 git submodule update --init --recursive
+```
 
 然后应用本仓库导出的本地修改 patch：
 
+```bash
 git apply ../qgc/patches/qgroundcontrol-local-changes.patch
+```
 
 之后可以在 Jetson TX1 或兼容的 ARM64 环境中重新编译。
+
 更多信息见：
 
+```text
 docs/QGC_BUILD_AND_EXPORT_NOTES.md
 docs/QGC_RUNTIME_INSTALL.md
+```
 
-QGroundControl 二进制
+## QGroundControl 二进制
+
 本仓库没有直接提交编译好的 TX1 ARM64 QGroundControl 二进制文件。
+
 相关说明见：
 
+```text
 qgc/artifacts-info/BINARY_ARTIFACT.md
 qgc/artifacts-info/qgroundcontrol-runtime-info.txt
+```
+
+推荐方式：
+
+- 源码修改以 patch 形式保存在仓库；
+- 二进制文件作为 GitHub Release 附件发布；
+- 不要把大型平台相关二进制直接提交到 main 分支。
+
+## 子模块说明
 
 导出的 patch 主要记录 QGroundControl 主仓库的修改。导出时以下子模块存在 dirty 或 changed 状态：
 
+```text
 libs/shapelib
 src/FirmwarePlugin/APM/ArduPilot-Parameter-Repository
+```
 
 如果完整复现需要这些子模块内部修改，需要单独导出和应用子模块级 patch。
+
 当前仓库记录的是这台 TX1 手持终端上已经可以编译和运行 QGC 的本地工作状态。
-Runtime Installation
+
+## Runtime Installation
+
 QGroundControl 在 TX1 上的运行安装方式见：
 
+```text
 docs/QGC_RUNTIME_INSTALL.md
+```
 
-Binary Artifact Note
+## Binary Artifact Note
 
 QGroundControl ARM64 二进制产物说明见：
 
+```text
 qgc/artifacts-info/BINARY_ARTIFACT.md
-
-
-
+```
